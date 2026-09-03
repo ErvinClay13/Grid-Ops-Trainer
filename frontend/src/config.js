@@ -12,4 +12,4 @@
  * to your Render backend URL (e.g. "https://grid-ops-trainer-api.onrender.com").
  */
 
-export const BACKEND_URL = "http://localhost:3002";
+export const BACKEND_URL = "https://grid-ops-trainer.onrender.com";
