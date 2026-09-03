@@ -1,0 +1,94 @@
+/**
+ * index.css
+ * ----------
+ * DESIGN SYSTEM NOTES (for future reference / reuse):
+ *
+ * Palette — same navy/circuit family as Grid Toolkit, so this reads as a
+ * companion tool rather than an unrelated project:
+ *   --bg:        #0B1220  deep navy background
+ *   --panel:     #131C2E  slightly lighter panel background
+ *   --panel-2:   #1B2740  input/card background, one step lighter still
+ *   --border:    #263455  subtle borders/dividers
+ *   --text:      #E7ECF6  primary text
+ *   --text-dim:  #8B98B4  secondary/muted text
+ *   --accent:    #4FD8C4  circuit-trace teal (links, active states, wiring lines)
+ *   --pass:      #5FD98A  green — "within limits" verdicts
+ *   --fail:      #FF6B5E  warm red — "exceeds limit" verdicts
+ *   --warn:      #F2B84B  amber — meter glow, in-progress/critical states
+ *
+ * Typography:
+ *   Space Grotesk — headings, nav, scenario titles (display personality)
+ *   Inter          — body copy, form labels, descriptions
+ *   JetBrains Mono — EVERY number: inputs, computed results, verdicts.
+ *     This is the signature move: numbers always render in mono, glowing
+ *     amber/green/red depending on state, like an actual meter readout.
+ *     It's what makes results feel like real equipment output instead of
+ *     a generic form response.
+ */
+
+:root {
+  --bg: #0b1220;
+  --panel: #131c2e;
+  --panel-2: #1b2740;
+  --border: #263455;
+  --text: #e7ecf6;
+  --text-dim: #8b98b4;
+  --accent: #4fd8c4;
+  --pass: #5fd98a;
+  --fail: #ff6b5e;
+  --warn: #f2b84b;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Faint circuit-trace background texture — subtle, not decorative clutter */
+body {
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+  background-attachment: fixed;
+  background-color: var(--bg);
+  opacity: 1;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+/* Visible keyboard focus everywhere — accessibility floor */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
