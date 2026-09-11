@@ -11,7 +11,11 @@ import CoachingPanel from "../components/CoachingPanel";
 import ResultReadout from "../components/ResultReadout";
 import InfoTooltip from "../components/InfoTooltip";
 import MathBreakdown from "../components/MathBreakdown";
-import { inputStyle, primaryButtonStyle, secondaryButtonStyle } from "../components/formStyles";
+import {
+  inputStyle,
+  primaryButtonStyle,
+  secondaryButtonStyle,
+} from "../components/formStyles";
 
 const labelStyle = {
   display: "block",
@@ -21,7 +25,20 @@ const labelStyle = {
 };
 
 // Must match the keys in backend logic/wireResistance.js
-const AWG_OPTIONS = ["14", "12", "10", "8", "6", "4", "2", "1", "1/0", "2/0", "3/0", "4/0"];
+const AWG_OPTIONS = [
+  "14",
+  "12",
+  "10",
+  "8",
+  "6",
+  "4",
+  "2",
+  "1",
+  "1/0",
+  "2/0",
+  "3/0",
+  "4/0",
+];
 
 export default function VoltageDrop() {
   const [currentAmps, setCurrentAmps] = useState("");
@@ -61,7 +78,13 @@ export default function VoltageDrop() {
   function buildMathSteps() {
     if (!result || !submittedInputs) return [];
     const { currentAmps, lengthFt, nominalVoltage } = submittedInputs;
-    const { resistancePer1000Ft, percentVoltageDrop, voltsDropped, maxAcceptablePercent, exceedsLimit } = result;
+    const {
+      resistancePer1000Ft,
+      percentVoltageDrop,
+      voltsDropped,
+      maxAcceptablePercent,
+      exceedsLimit,
+    } = result;
 
     const numerator = 2 * currentAmps * lengthFt * resistancePer1000Ft;
     const denominator = 1000 * nominalVoltage;
@@ -76,7 +99,8 @@ export default function VoltageDrop() {
         formula: `2 × ${currentAmps}A × ${lengthFt}ft × ${resistancePer1000Ft} = ${round2(numerator)}`,
       },
       {
-        label: "Step 3 — Divide by (1000 × nominal voltage), then ×100 for percent",
+        label:
+          "Step 3 — Divide by (1000 × nominal voltage), then ×100 for percent",
         formula: `${round2(numerator)} ÷ (1000 × ${nominalVoltage}) × 100 = ${percentVoltageDrop}%`,
       },
       {
@@ -101,11 +125,21 @@ export default function VoltageDrop() {
       <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "6px" }}>
         Voltage Drop Calculation
       </h2>
-      <p style={{ color: "var(--text-dim)", marginTop: 0, marginBottom: "24px" }}>
-        Check whether a conductor run stays within the acceptable voltage drop limit.
+      <p
+        style={{ color: "var(--text-dim)", marginTop: 0, marginBottom: "24px" }}
+      >
+        Check whether a conductor run stays within the acceptable voltage drop
+        limit.
       </p>
 
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "18px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          flexWrap: "wrap",
+          marginBottom: "18px",
+        }}
+      >
         <div style={{ flex: 1, minWidth: "140px" }}>
           <label style={labelStyle}>
             Current (A)
@@ -132,7 +166,14 @@ export default function VoltageDrop() {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          flexWrap: "wrap",
+          marginBottom: "20px",
+        }}
+      >
         <div style={{ flex: 1, minWidth: "140px" }}>
           <label style={labelStyle}>
             Wire gauge (AWG)
@@ -164,11 +205,17 @@ export default function VoltageDrop() {
         </div>
       </div>
 
-      <button onClick={handleSubmit} disabled={loading} style={primaryButtonStyle}>
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        style={primaryButtonStyle}
+      >
         {loading ? "Calculating…" : "Calculate voltage drop"}
       </button>
 
-      {error && <p style={{ color: "var(--fail)", marginTop: "14px" }}>{error}</p>}
+      {error && (
+        <p style={{ color: "var(--fail)", marginTop: "14px" }}>{error}</p>
+      )}
 
       {result && (
         <>
@@ -176,16 +223,28 @@ export default function VoltageDrop() {
             verdict={result.verdict}
             isGood={!result.exceedsLimit}
             metrics={[
-              { label: "Resistance (Ω / 1000 ft)", value: result.resistancePer1000Ft },
-              { label: "% voltage drop", value: `${result.percentVoltageDrop}%` },
+              {
+                label: "Resistance (Ω / 1000 ft)",
+                value: result.resistancePer1000Ft,
+              },
+              {
+                label: "% voltage drop",
+                value: `${result.percentVoltageDrop}%`,
+              },
               { label: "Volts dropped", value: `${result.voltsDropped} V` },
-              { label: "Max acceptable", value: `${result.maxAcceptablePercent}%` },
+              {
+                label: "Max acceptable",
+                value: `${result.maxAcceptablePercent}%`,
+              },
             ]}
           />
           <CoachingPanel scenarioType="voltageDrop" result={result} />
 
           {!showMath && (
-            <button onClick={() => setShowMath(true)} style={{ ...secondaryButtonStyle, marginTop: "12px" }}>
+            <button
+              onClick={() => setShowMath(true)}
+              style={{ ...secondaryButtonStyle, marginTop: "12px" }}
+            >
               Show the math
             </button>
           )}
