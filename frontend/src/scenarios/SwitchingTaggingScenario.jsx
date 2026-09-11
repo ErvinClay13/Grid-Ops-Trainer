@@ -1,11 +1,11 @@
 /**
  * SwitchingTaggingScenario.jsx
- * -----------------------------
  */
+
 import { useState } from "react";
 import CoachingPanel from "../components/CoachingPanel";
 import InfoTooltip from "../components/InfoTooltip";
-import { primaryButtonStyle, secondaryButtonStyle } from "./formStyles";
+import { primaryButtonStyle, secondaryButtonStyle } from "../components/formStyles";
 
 // Functional status colors - these carry fixed safety meaning (like a real
 // one-line diagram legend) rather than following the app's accent theme.
