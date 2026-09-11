@@ -1,7 +1,6 @@
 /**
  * SwitchingTaggingScenario.jsx
  */
-
 import { useState } from "react";
 import CoachingPanel from "../components/CoachingPanel";
 import InfoTooltip from "../components/InfoTooltip";
@@ -96,6 +95,24 @@ export default function SwitchingTaggingScenario() {
     setSwitchA("closed");
     setSwitchB("closed");
     logAction("Tags removed, switches closed - segment re-energized");
+  }
+
+  // Builds a plain-text version of the log and triggers a browser download.
+  // Mirrors the real-world requirement to "maintain operating log,
+  // interruption reports and associated records" - the log needs to be
+  // something an operator can actually save/hand off, not just on-screen.
+  function downloadLog() {
+    const header = `Switching & Tagging Operating Log\nGenerated: ${new Date().toLocaleString()}\n\n`;
+    const body = log.length ? log.join("\n") : "No actions recorded.";
+    const blob = new Blob([header + body], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `switching-log-${Date.now()}.txt`;
+    link.click();
+
+    URL.revokeObjectURL(url); // free the memory once the download starts
   }
 
   return (
@@ -223,13 +240,31 @@ export default function SwitchingTaggingScenario() {
       <div>
         <div
           style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
-            color: "var(--accent)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             marginBottom: "8px",
           }}
         >
-          Operating log
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.75rem",
+              color: "var(--accent)",
+            }}
+          >
+            Operating log
+          </div>
+          <button
+            onClick={downloadLog}
+            style={{
+              ...secondaryButtonStyle,
+              padding: "4px 10px",
+              fontSize: "0.75rem",
+            }}
+          >
+            Download log
+          </button>
         </div>
         <div
           style={{
