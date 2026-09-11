@@ -10,12 +10,14 @@ import Restoration from "./scenarios/Restoration";
 import LoadCheck from "./scenarios/LoadCheck";
 import VoltageDrop from "./scenarios/VoltageDrop";
 import DerImpact from "./scenarios/DerImpact";
+import SwitchingTagging from "./scenarios/SwitchingTaggingScenario";
 
 const SCENARIOS = [
   { id: "restoration", label: "Storm Restoration", Component: Restoration },
   { id: "loadCheck", label: "Load Capacity Check", Component: LoadCheck },
   { id: "voltageDrop", label: "Voltage Drop", Component: VoltageDrop },
   { id: "derImpact", label: "DER Interconnection", Component: DerImpact },
+  { id: "switchingTagging", label: "Switching & Tagging", Component: SwitchingTagging },
 ];
 
 export default function App() {

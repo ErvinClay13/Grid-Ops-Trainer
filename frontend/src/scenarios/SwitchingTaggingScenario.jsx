@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+/**
+ * SwitchingTaggingScenario.jsx
+ * -----------------------------
+ */
+import { useState } from "react";
+import CoachingPanel from "../components/CoachingPanel";
+import InfoTooltip from "../components/InfoTooltip";
+import { primaryButtonStyle, secondaryButtonStyle } from "./formStyles";
 
-
+// Functional status colors - these carry fixed safety meaning (like a real
+// one-line diagram legend) rather than following the app's accent theme.
 const STATE_COLORS = {
-  closed: "#1D9E75", // energized - green
-  open: "#888780",   // de-energized - grey
-  tagged: "#E24B4A", // tagged/locked out - red
+  closed: "#1D9E75", // energized
+  open: "#6b6f76", // de-energized
+  tagged: "#E24B4A", // tagged / locked out
+  cleared: "#378ADD", // cleared for work
 };
 
 const STATE_LABELS = {
@@ -13,21 +22,29 @@ const STATE_LABELS = {
   tagged: "Tagged (locked out)",
 };
 
-function SwitchIcon({ state }) {
+function SwitchNode({ state, label, onClick }) {
   return (
-    <svg width="60" height="60" viewBox="0 0 60 60">
-      <circle cx="30" cy="30" r="26" fill={STATE_COLORS[state]} />
-      <text
-        x="30"
-        y="35"
-        textAnchor="middle"
-        fontSize="11"
-        fill="#fff"
-        fontFamily="sans-serif"
+    <div style={{ textAlign: "center" }}>
+      <button
+        onClick={onClick}
+        style={{
+          width: "60px",
+          height: "60px",
+          borderRadius: "50%",
+          border: "none",
+          background: STATE_COLORS[state],
+          color: "#fff",
+          fontSize: "0.65rem",
+          fontFamily: "var(--font-body)",
+          cursor: "pointer",
+        }}
       >
         {state === "closed" ? "CLOSED" : state === "open" ? "OPEN" : "TAG"}
-      </text>
-    </svg>
+      </button>
+      <div style={{ fontSize: "0.8rem", color: "var(--text-dim)", marginTop: "6px" }}>
+        {label}
+      </div>
+    </div>
   );
 }
 
@@ -43,7 +60,7 @@ export default function SwitchingTaggingScenario() {
   }
 
   // A switch can only move forward one step at a time: closed -> open -> tagged.
-  // This enforces the real safety rule: you cannot tag an energized switch.
+  // Enforces the real safety rule - you cannot tag an energized switch.
   function advanceSwitch(which) {
     const current = which === "A" ? switchA : switchB;
     const setFn = which === "A" ? setSwitchA : setSwitchB;
@@ -59,7 +76,7 @@ export default function SwitchingTaggingScenario() {
 
   const bothTagged = switchA === "tagged" && switchB === "tagged";
   const workZoneColor = clearanceConfirmed
-    ? "#378ADD" // cleared for work - blue
+    ? STATE_COLORS.cleared
     : bothTagged
     ? STATE_COLORS.tagged
     : switchA === "closed" || switchB === "closed"
@@ -82,78 +99,102 @@ export default function SwitchingTaggingScenario() {
   }
 
   return (
-    <div style={{ fontFamily: "sans-serif", maxWidth: 700 }}>
-      <h2>Switching & Safety Tagging</h2>
-      <p>
-        Isolate the work zone, apply tags, and confirm clearance before the
-        crew can work. Reverse the sequence with Restore when the job is
-        done.
+    <div>
+      <h1
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "1.4rem",
+          marginBottom: "6px",
+        }}
+      >
+        Switching & Safety Tagging
+      </h1>
+      <p style={{ color: "var(--text-dim)", fontSize: "0.9rem", marginBottom: "28px" }}>
+        Isolate the work zone, apply tags, and confirm clearance before the crew
+        can work. Reverse the sequence with Restore when the job is done.
       </p>
 
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 12,
-          margin: "24px 0",
+          gap: "14px",
+          background: "var(--panel-2)",
+          border: "1px solid var(--border)",
+          borderRadius: "6px",
+          padding: "28px 24px",
+          marginBottom: "20px",
         }}
       >
-        <div style={{ textAlign: "center" }}>
-          <div>Source</div>
+        <div style={{ textAlign: "center", color: "var(--text-dim)", fontSize: "0.8rem" }}>
+          Source
         </div>
-        <div style={{ width: 30, height: 4, background: "#888" }} />
+        <div style={{ width: "24px", height: "3px", background: "var(--border)" }} />
 
-        <div style={{ textAlign: "center" }}>
-          <button onClick={() => advanceSwitch("A")} style={{ border: "none", background: "none", cursor: "pointer" }}>
-            <SwitchIcon state={switchA} />
-          </button>
-          <div style={{ fontSize: 12 }}>Switch A</div>
-        </div>
+        <SwitchNode
+          state={switchA}
+          label={
+            <>
+              Switch A <InfoTooltip text="Click to advance: closed -> open -> tagged" />
+            </>
+          }
+          onClick={() => advanceSwitch("A")}
+        />
 
-        <div style={{ width: 30, height: 4, background: "#888" }} />
+        <div style={{ width: "24px", height: "3px", background: "var(--border)" }} />
 
         <div
           style={{
-            width: 100,
-            height: 40,
+            width: "110px",
+            height: "44px",
             background: workZoneColor,
-            borderRadius: 4,
+            borderRadius: "6px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "#fff",
-            fontSize: 12,
+            fontSize: "0.75rem",
+            fontFamily: "var(--font-body)",
           }}
         >
           Work Zone
         </div>
 
-        <div style={{ width: 30, height: 4, background: "#888" }} />
+        <div style={{ width: "24px", height: "3px", background: "var(--border)" }} />
 
-        <div style={{ textAlign: "center" }}>
-          <button onClick={() => advanceSwitch("B")} style={{ border: "none", background: "none", cursor: "pointer" }}>
-            <SwitchIcon state={switchB} />
-          </button>
-          <div style={{ fontSize: 12 }}>Switch B</div>
-        </div>
+        <SwitchNode
+          state={switchB}
+          label={
+            <>
+              Switch B <InfoTooltip text="Click to advance: closed -> open -> tagged" />
+            </>
+          }
+          onClick={() => advanceSwitch("B")}
+        />
 
-        <div style={{ width: 30, height: 4, background: "#888" }} />
-        <div style={{ textAlign: "center" }}>
-          <div>Load</div>
+        <div style={{ width: "24px", height: "3px", background: "var(--border)" }} />
+        <div style={{ textAlign: "center", color: "var(--text-dim)", fontSize: "0.8rem" }}>
+          Load
         </div>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <strong>Legend: </strong>
+      <div style={{ marginBottom: "20px" }}>
         {Object.entries(STATE_LABELS).map(([key, label]) => (
-          <span key={key} style={{ marginRight: 16, fontSize: 13 }}>
+          <span
+            key={key}
+            style={{
+              marginRight: "18px",
+              fontSize: "0.8rem",
+              color: "var(--text-dim)",
+            }}
+          >
             <span
               style={{
                 display: "inline-block",
-                width: 10,
-                height: 10,
+                width: "9px",
+                height: "9px",
                 background: STATE_COLORS[key],
-                marginRight: 4,
+                marginRight: "6px",
                 borderRadius: "50%",
               }}
             />
@@ -162,35 +203,60 @@ export default function SwitchingTaggingScenario() {
         ))}
       </div>
 
-      <div style={{ marginBottom: 16 }}>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
         <button
           onClick={confirmClearance}
           disabled={!bothTagged || clearanceConfirmed}
+          style={{
+            ...primaryButtonStyle,
+            opacity: !bothTagged || clearanceConfirmed ? 0.5 : 1,
+            cursor: !bothTagged || clearanceConfirmed ? "default" : "pointer",
+          }}
         >
           Confirm Clearance
-        </button>{" "}
-        <button onClick={restore}>Restore</button>
+        </button>
+        <button onClick={restore} style={secondaryButtonStyle}>
+          Restore
+        </button>
       </div>
 
       <div>
-        <strong>Operating Log</strong>
         <div
           style={{
-            background: "#f5f5f5",
-            padding: 12,
-            borderRadius: 4,
-            fontSize: 13,
-            maxHeight: 160,
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.75rem",
+            color: "var(--accent)",
+            marginBottom: "8px",
+          }}
+        >
+          Operating log
+        </div>
+        <div
+          style={{
+            background: "var(--panel)",
+            border: "1px solid var(--border)",
+            borderRadius: "4px",
+            padding: "14px 16px",
+            fontSize: "0.8rem",
+            color: "var(--text)",
+            maxHeight: "160px",
             overflowY: "auto",
           }}
         >
           {log.length === 0 ? (
-            <div style={{ color: "#888" }}>No actions yet.</div>
+            <div style={{ color: "var(--text-dim)" }}>No actions yet.</div>
           ) : (
             log.map((entry, i) => <div key={i}>{entry}</div>)
           )}
         </div>
       </div>
+
+      {clearanceConfirmed && (
+        <CoachingPanel
+          scenarioType="switchingTagging"
+          result={{ switchA, switchB, clearanceConfirmed }}
+        />
+      )}
     </div>
   );
 }
